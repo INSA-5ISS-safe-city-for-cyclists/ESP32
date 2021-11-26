@@ -13,8 +13,8 @@ void Speed::set_range_cm(long range_0, long range_1) {
 void Speed::compute_vehicles_speed() {
 
 
-    int32_t speed_range_0 = (this->last_range_0 - this->range_cm_0) * 1E3 / (millis()- this->last_timestamp_range_0);
-    int32_t speed_range_1 = (this->last_range_1 - this->range_cm_1) * 1E3 / (millis()- this->last_timestamp_range_1);
+    this->speed_range_0 = (this->last_range_0 - this->range_cm_0) * 1E3 / (millis()- this->last_timestamp_range_0);
+    this->speed_range_1 = (this->last_range_1 - this->range_cm_1) * 1E3 / (millis()- this->last_timestamp_range_1);
 
 
 
@@ -34,6 +34,8 @@ void Speed::compute_vehicles_speed() {
     this->last_range_1 = this->range_cm_1;
     this->last_timestamp_range_1 = millis();
 
+    Serial.print("Speed: ");Serial.println(this->vehicles_speed);
+
     if(this->vehicles_speed > 5000) this->vehicles_speed = 0;
 }
 
@@ -52,4 +54,9 @@ long Speed:: get_distance() {
     long min;
     this->range_cm_0 < this->range_cm_1 ? min = this->range_cm_0 : min = this->range_cm_1;
     return min;
+}
+
+long* Speed::get_speed_range() {
+    long tab[] = {this->speed_range_0, this->speed_range_1};
+    return tab;
 }

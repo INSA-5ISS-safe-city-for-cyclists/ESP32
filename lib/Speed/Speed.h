@@ -18,6 +18,8 @@ private:
     long timestamp_sensor_1 = 0;
     long vehicles_speed = 0;
     long distance = 0;
+    long speed_range_0;
+    long speed_range_1;
     bool flag_0 = false;
     bool flag_1 = false;
 
@@ -29,6 +31,7 @@ public:
     long get_distance();
     void reset();
     long get_vehicule_speed();
+    long* get_speed_range();
 };
 
 #endif

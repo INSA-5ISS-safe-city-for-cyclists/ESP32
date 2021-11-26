@@ -43,7 +43,10 @@
 //#define USER_EMAIL "test@test.com"
 //#define USER_PASSWORD "123456789"
 
-#define WARNING_SPEED 30;
+#define WARNING_SPEED 35
+#define DISTANCE_BETWEEN_ULTRASONIC 40
+#define D5 14
+#define D6 12
 
 //Define Firebase Data object
 FirebaseData fbdo;
@@ -51,6 +54,10 @@ FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
 
+Speed speed(DISTANCE_BETWEEN_ULTRASONIC);
+
+Ultrasonic ultrasonic_0(D5);
+Ultrasonic ultrasonic_1(D6);
 
 unsigned long sendDataPrevMillis = 0;
 
@@ -140,54 +147,31 @@ void loop()
 {
   //Flash string (PROGMEM and  (FPSTR), String,, String C/C++ string, const char, char array, string literal are supported
   //in all Firebase and FirebaseJson functions, unless F() macro is not supported.
+  long range_0 = ultrasonic_0.MeasureInCentimeters();
+  delay(10);
+  long range_1 = ultrasonic_1.MeasureInCentimeters();
+  delay(10);
+  speed.set_range_cm(range_0, range_1);
+  speed.compute_vehicles_speed();
 
-  if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0))
+  if (Firebase.ready() && speed.get_vehicule_speed() > WARNING_SPEED)
   {
-    sendDataPrevMillis = millis();
-
-    Serial.printf("Set bool... %s\n", Firebase.setBool(fbdo, "/test/bool", count % 2 == 0) ? "ok" : fbdo.errorReason().c_str());
-
-    Serial.printf("Get bool... %s\n", Firebase.getBool(fbdo, "/test/bool") ? fbdo.to<bool>() ? "true" : "false" : fbdo.errorReason().c_str());
-
-    bool bVal;
-    Serial.printf("Get bool ref... %s\n", Firebase.getBool(fbdo, "/test/bool", &bVal) ? bVal ? "true" : "false" : fbdo.errorReason().c_str());
-
-    Serial.printf("Set int... %s\n", Firebase.setInt(fbdo, "/test/int", count) ? "ok" : fbdo.errorReason().c_str());
-
-    Serial.printf("Get int... %s\n", Firebase.getInt(fbdo, "/test/int") ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
-
-    int iVal = 0;
-    Serial.printf("Get int ref... %s\n", Firebase.getInt(fbdo, "/test/int", &iVal) ? String(iVal).c_str() : fbdo.errorReason().c_str());
-
-    Serial.printf("Set float... %s\n", Firebase.setFloat(fbdo, "/test/float", count + 10.2) ? "ok" : fbdo.errorReason().c_str());
-
-    Serial.printf("Get float... %s\n", Firebase.getFloat(fbdo, "/test/float") ? String(fbdo.to<float>()).c_str() : fbdo.errorReason().c_str());
-
-    Serial.printf("Set double... %s\n", Firebase.setDouble(fbdo, "/test/double", count + 35.517549723765) ? "ok" : fbdo.errorReason().c_str());
-
-    Serial.printf("Get double... %s\n", Firebase.getDouble(fbdo, "/test/double") ? String(fbdo.to<double>()).c_str() : fbdo.errorReason().c_str());
-
-    Serial.printf("Set string... %s\n", Firebase.setString(fbdo, "/test/string", "Hello World!") ? "ok" : fbdo.errorReason().c_str());
-
-    Serial.printf("Get string... %s\n", Firebase.getString(fbdo, "/test/string") ? fbdo.to<const char *>() : fbdo.errorReason().c_str());
-
-    //For the usage of FirebaseJson, see examples/FirebaseJson/BasicUsage/Create.ino
+    delay(1000);
+    long speed_val = speed.get_vehicule_speed();
+    long distance_val = speed.get_distance();
+    //long* tab = speed.get_speed_range();
     FirebaseJson json;
+    String id = String(millis());
+    json.set(id+"/ts/.sv", "timestamp");
+    json.set(id+"/speed/", String(speed_val));
+    json.set(id+"/distance/", String(distance_val));
+    json.set(id+"/speed_range_0", String(10));
+    json.set(id+"/speed_range_1", String(11));
+    Serial.printf("Set json... %s\n", Firebase.updateNode(fbdo, "/velo/", json) ? "ok" : fbdo.errorReason().c_str());
 
-    if (count == 0)
-    {
-      json.set("value/round/" + String(count), "cool!");
-      json.set("vaue/ts/.sv", "timestamp");
-      Serial.printf("Set json... %s\n", Firebase.set(fbdo, "/test/json", json) ? "ok" : fbdo.errorReason().c_str());
-    }
-    else
-    {
-      json.add(String(count), "smart!");
-      Serial.printf("Update node... %s\n", Firebase.updateNode(fbdo, "/test/json/value/round", json) ? "ok" : fbdo.errorReason().c_str());
-    }
-    
+    speed.reset();
     Serial.println();
-    
+
     //For generic set/get functions.
 
     //For generic set, use Firebase.set(fbdo, <path>, <any variable or value>)
