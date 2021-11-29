@@ -54,7 +54,6 @@ void setup (){
                 BLECharacteristic::PROPERTY_INDICATE
             );
 
-    // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
     // Create a BLE Descriptor
     pCharacteristic->addDescriptor(new BLE2902());
 
