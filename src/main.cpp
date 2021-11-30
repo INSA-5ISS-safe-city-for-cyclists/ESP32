@@ -3,6 +3,8 @@
 #include <BLEUtils.h>
 #include <BLEServer.h>
 #include <BLE2902.h>
+#include <stdlib.h>
+
 
 
 // Each services and characteristic have an UUID 
@@ -31,6 +33,24 @@ class MyServerCallbacks: public BLEServerCallbacks {
     }
 };
 
+class MyCharacteristicsCallbacks: public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic* pCharacteristic) {
+        std::string value = pCharacteristic->getValue();
+
+        if(value.length()>0) {
+            Serial.println("**********");
+            Serial.print("New value :");
+            for (int i=0; i< value.length(); i++)
+                Serial.print(value[i]);
+
+            Serial.println();
+            Serial.println("***********");
+
+        }
+
+    }
+};
+
 
 void setup (){
     Serial.begin(9600);
@@ -41,9 +61,10 @@ void setup (){
     // Create the BLE Server
     pServer = BLEDevice::createServer();
     pServer->setCallbacks(new MyServerCallbacks());
+    
 
     // Create the BLE Service
-    BLEService *pService = pServer->createService(SERVICE_UUID);
+    pService = pServer->createService(SERVICE_UUID);
 
     // Create a BLE Characteristic
     pCharacteristic = pService->createCharacteristic(
@@ -56,6 +77,8 @@ void setup (){
 
     // Create a BLE Descriptor
     pCharacteristic->addDescriptor(new BLE2902());
+    
+    pCharacteristic->setCallbacks(new MyCharacteristicsCallbacks);
 
     // Start the service
     pService->start();
@@ -70,7 +93,7 @@ void setup (){
 }
 
 void loop (){
-    if (deviceConnected) {
+    if (deviceConnected && oldDeviceConnected) {
         
         pCharacteristic->setValue((uint8_t*)&value, 4); // SET VALUE TO MODIFY TO SEND DATA SENSOR
         pCharacteristic->notify();
