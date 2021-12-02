@@ -4,12 +4,14 @@
 #include <BLEServer.h>
 #include <BLE2902.h>
 #include <stdlib.h>
-
+#include <ArduinoJson.h>
 
 
 // Each services and characteristic have an UUID 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define RCHARACTERISTIC_UUID "fc31717c-0690-4b37-b0e0-4e54facc16d0"
+
 
 
 //Initialization of variable
@@ -51,6 +53,24 @@ class MyCharacteristicsCallbacks: public BLECharacteristicCallbacks {
     }
 };
 
+void send_data(){
+    DynamicJsonDocument doc(1024);
+    doc["timestamp"]=millis();
+    doc["date"]="2/12/2021";
+    doc["distance"]= 100;
+    doc["object_speed"]=200;
+    doc["latitude"]=50;
+    doc["longitude"]=95;
+    doc["bicycle_speed"]=15;
+
+    String body;
+    serializeJson(doc, body);
+    Serial.println(body);
+
+    pCharacteristic->setValue(body.c_str());
+    pCharacteristic->notify();
+}
+
 
 void setup (){
     Serial.begin(9600);
@@ -66,7 +86,7 @@ void setup (){
     // Create the BLE Service
     pService = pServer->createService(SERVICE_UUID);
 
-    // Create a BLE Characteristic
+    // Create a BLE Characteristic for the serveur to data
     pCharacteristic = pService->createCharacteristic(
                 CHARACTERISTIC_UUID,
                 BLECharacteristic::PROPERTY_READ   |
@@ -92,14 +112,14 @@ void setup (){
     Serial.println("Waiting a client connection to notify...");
 }
 
+
 void loop (){
     if (deviceConnected && oldDeviceConnected) {
-        
-        pCharacteristic->setValue((uint8_t*)&value, 4); // SET VALUE TO MODIFY TO SEND DATA SENSOR
-        pCharacteristic->notify();
-        value++;
+        //pCharacteristic->setValue((uint8_t*)&value, 4); // SET VALUE TO MODIFY TO SEND DATA SENSOR
+        send_data();
+        //value++;
         Serial.println("Connected...");
-        delay(500); // bluetooth stack will go into congestion, if too many packets are sent,
+        delay(5000); // bluetooth stack will go into congestion, if too many packets are sent --> 10 ms est le minimum
     }
     // disconnecting
     if (!deviceConnected && oldDeviceConnected) {
@@ -112,7 +132,6 @@ void loop (){
     // connecting
     if (deviceConnected && !oldDeviceConnected) {
         Serial.println("Connection...");
-
         oldDeviceConnected = deviceConnected;
     }
 }

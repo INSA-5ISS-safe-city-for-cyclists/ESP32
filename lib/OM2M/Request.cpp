@@ -11,7 +11,7 @@ Request::~Request()
 {
 }
 
-void Request::wifi_init() {
+/*void Request::wifi_init() {
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
 }
@@ -51,6 +51,7 @@ void Request::get_data(Speed spd, Sim gps) {
     this->data.push_back(body);
 }
 
+
 void Request::post_DATA() {
     WiFiClient client;
     HTTPClient httpClient;
@@ -70,4 +71,4 @@ void Request::post_DATA() {
     httpClient.end();
     Serial.println(content);
     delay(5000);
-}
+}*/
