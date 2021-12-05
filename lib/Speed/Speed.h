@@ -5,7 +5,7 @@
 
 class Speed
 {
-private:
+public:
     /* data */
     int sensors_distance_cm;
     long range_cm_0;
@@ -18,12 +18,14 @@ private:
     long timestamp_sensor_1 = 0;
     long vehicles_speed = 0;
     long distance = 0;
-    long speed_range_0;
-    long speed_range_1;
     bool flag_0 = false;
     bool flag_1 = false;
+    long buff_0 = 0;
+    long buff_1 = 0;
 
 public:
+    double speed_range_0 = 0;
+    long speed_range_1 = 0;
     Speed(int sensors_cm);
     ~Speed(){};
     void compute_vehicles_speed();
@@ -31,7 +33,6 @@ public:
     long get_distance();
     void reset();
     long get_vehicule_speed();
-    long* get_speed_range();
 };
 
 #endif
