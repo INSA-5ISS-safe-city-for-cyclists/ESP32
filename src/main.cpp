@@ -78,7 +78,7 @@ void setup()
   p.Begin();
   //p.AddTimeGraph("lol", 250, "dif_0", x);
   //p.AddTimeGraph("lol", 250, "dif_0", x, "dif_1", y);
-  p.AddTimeGraph("lol", 250, "dif_0", x, "dif_1", y, "dif_2", z);
+  p.AddTimeGraph("lol", 250, "speed", x, "sens_0", y, "sens_1", z);
 }
 
 void loop()
