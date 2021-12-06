@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 #include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
@@ -5,6 +6,9 @@
 #include <BLE2902.h>
 #include <stdlib.h>
 #include <ArduinoJson.h>
+=======
+#include <BLE.h>
+>>>>>>> Stashed changes
 
 
 // Each services and characteristic have an UUID 
@@ -12,6 +16,7 @@
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define RCHARACTERISTIC_UUID "fc31717c-0690-4b37-b0e0-4e54facc16d0"
 
+<<<<<<< Updated upstream
 
 
 //Initialization of variable
@@ -70,10 +75,14 @@ void send_data(){
     pCharacteristic->setValue(body.c_str());
     pCharacteristic->notify();
 }
+=======
+BLE myBLE;
+>>>>>>> Stashed changes
 
 
 void setup (){
     Serial.begin(9600);
+<<<<<<< Updated upstream
 
     // Create the BLE Device
     BLEDevice::init("ESP32");
@@ -110,10 +119,15 @@ void setup (){
     pAdvertising->setMinPreferred(0x0);  // set value to 0x00 to not advertise this parameter
     BLEDevice::startAdvertising();
     Serial.println("Waiting a client connection to notify...");
+=======
+    myBLE.init_BLE();
+    myBLE.start_BLE();
+>>>>>>> Stashed changes
 }
 
 
 void loop (){
+<<<<<<< Updated upstream
     if (deviceConnected && oldDeviceConnected) {
         //pCharacteristic->setValue((uint8_t*)&value, 4); // SET VALUE TO MODIFY TO SEND DATA SENSOR
         send_data();
@@ -134,4 +148,7 @@ void loop (){
         Serial.println("Connection...");
         oldDeviceConnected = deviceConnected;
     }
+=======
+    myBLE.checking();
+>>>>>>> Stashed changes
 }

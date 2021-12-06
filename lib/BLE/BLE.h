@@ -1,3 +1,10 @@
+<<<<<<< Updated upstream
+=======
+
+#ifndef BLE_H
+#define BLE_H
+
+>>>>>>> Stashed changes
 #include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
@@ -9,6 +16,7 @@
 // Each services and characteristic have an UUID 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+
 
 class MyServerCallbacks: public BLEServerCallbacks {
 
@@ -25,15 +33,23 @@ class MyCharacteristicsCallbacks: public BLECharacteristicCallbacks {
 
 class BLE {
     private:
-    BLEServer* pServer = NULL;
     BLECharacteristic* pCharacteristic = NULL;
     BLEService *pService= NULL;
-    bool deviceConnected = false;
-    bool oldDeviceConnected = false;
+
 
     public:
+    BLE();
+    ~BLE();
+    BLEServer* pServer = NULL;
+
     void init_BLE();
+<<<<<<< Updated upstream
     
+=======
+    void start_BLE();
+    void send_data();
+    void checking();
+>>>>>>> Stashed changes
 
 };
 
