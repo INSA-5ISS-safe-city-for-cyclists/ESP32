@@ -12,29 +12,33 @@ void Speed::set_range_cm(long range_0, long range_1) {
 
 void Speed::compute_vehicles_speed() {
 
+    //this->flag_0 = false;
+    //this->flag_1 = false;
 
-    int32_t speed_range_0 = (this->last_range_0 - this->range_cm_0) * 1E3 / (millis()- this->last_timestamp_range_0);
-    int32_t speed_range_1 = (this->last_range_1 - this->range_cm_1) * 1E3 / (millis()- this->last_timestamp_range_1);
+    bool flag_2 = false;
 
+    this->speed_range_0 = this->last_range_0 - this->range_cm_0;
+    this->speed_range_1 = this->last_range_1 - this->range_cm_1;
 
+    if(range_cm_0 < 100 && this->speed_range_0 > 50) {this->timestamp_sensor_0 = micros();  this->flag_0 = true; this->buff_0 = this->speed_range_0;}
+    if(range_cm_1 < 100 && this->speed_range_1 > 50) {this->timestamp_sensor_1 = micros();  this->flag_1 = true; this->buff_1 = this->speed_range_1;}
 
-    if(speed_range_0 > 1000) {this->timestamp_sensor_0 = micros();  this->flag_0 = true;}
-    if(speed_range_1 > 1000) {this->timestamp_sensor_1 = micros();  this->flag_1 = true;}
-    
-    
     if(flag_0 && flag_1){
         this->vehicles_speed = this->sensors_distance_cm * 1E1 * 3600 / abs(this->timestamp_sensor_0 - this->timestamp_sensor_1);
         this->flag_0 = false;
         this->flag_1 = false;
     }
 
+    if(this->vehicles_speed > 200) this->vehicles_speed = 0;
+
     this->last_range_0 = this->range_cm_0;
     this->last_timestamp_range_0 = millis();
 
     this->last_range_1 = this->range_cm_1;
     this->last_timestamp_range_1 = millis();
-
-    if(this->vehicles_speed > 5000) this->vehicles_speed = 0;
+    //Serial.print(" flg: ");Serial.print(this->flag_0);Serial.print(this->flag_1);Serial.print(flag_2);
+    //Serial.print(" spd: ");Serial.println(this->vehicles_speed);
+    //if(this->vehicles_speed > 120) this->vehicles_speed = 0;
 }
 
 long Speed::get_vehicule_speed() {
