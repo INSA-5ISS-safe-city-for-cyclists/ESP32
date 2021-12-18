@@ -19,8 +19,7 @@ class LIDAR {
     LIDAR();
     ~LIDAR();
     void initialize_Lidar(HardwareSerial *my_Serial, int8_t my_RX, int8_t my_TX);
-    int get_distance(HardwareSerial *my_Serial);
-    void print_distance(HardwareSerial *my_Serial);
+    int get_distance_inCm(HardwareSerial *my_Serial);
 
 
 };
