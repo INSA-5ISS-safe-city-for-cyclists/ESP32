@@ -1,10 +1,7 @@
-<<<<<<< Updated upstream
-=======
 
 #ifndef BLE_H
 #define BLE_H
 
->>>>>>> Stashed changes
 #include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
@@ -43,13 +40,10 @@ class BLE {
     BLEServer* pServer = NULL;
 
     void init_BLE();
-<<<<<<< Updated upstream
-    
-=======
     void start_BLE();
     void send_data();
     void checking();
->>>>>>> Stashed changes
 
 };
 
+#endif

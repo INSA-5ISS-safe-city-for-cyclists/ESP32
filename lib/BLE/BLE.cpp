@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 #include "BLE.h"
 
 BLE::BLE()
@@ -121,4 +119,3 @@ void BLE::checking()
         olddeviceConnected_ = deviceConnected_;
     }
 }
->>>>>>> Stashed changes
