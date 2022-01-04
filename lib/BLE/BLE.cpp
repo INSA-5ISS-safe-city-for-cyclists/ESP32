@@ -46,7 +46,7 @@ void BLE::start_BLE(){
     // Start advertising
     BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
     pAdvertising->addServiceUUID(SERVICE_UUID);
-    pAdvertising->setScanResponse(false);
+    pAdvertising->setScanResponse(true);
     pAdvertising->setMinPreferred(0x0);  // set value to 0x00 to not advertise this parameter
     BLEDevice::startAdvertising();
     Serial.println("Waiting a client connection to notify...");
@@ -55,12 +55,8 @@ void BLE::start_BLE(){
 void BLE::send_data(){
 
     DynamicJsonDocument doc(1024);
-    doc["timestamp"]=millis();
-    doc["date"]="2/12/2021";
     doc["distance"]= 100;
     doc["object_speed"]=200;
-    doc["latitude"]=50;
-    doc["longitude"]=95;
     doc["bicycle_speed"]=15;
 
     String body;
