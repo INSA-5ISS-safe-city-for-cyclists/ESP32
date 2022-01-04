@@ -52,12 +52,11 @@ void BLE::start_BLE(){
     Serial.println("Waiting a client connection to notify...");
 }
 
-void BLE::send_data(){
+void BLE::send_data(int distance,int vehicule_speed){
 
     DynamicJsonDocument doc(1024);
-    doc["distance"]= 100;
-    doc["object_speed"]=200;
-    doc["bicycle_speed"]=15;
+    doc["distance"]= distance;
+    doc["object_speed"]=vehicule_speed;
 
     String body;
     serializeJson(doc, body);
@@ -92,11 +91,11 @@ void MyServerCallbacks::onDisconnect(BLEServer* pServer){
      deviceConnected_ = false;
 }
 
-void BLE::checking()
+void BLE::checking(int distance,int vehicule_speed)
 {
         if (deviceConnected_ && olddeviceConnected_) {
         //pCharacteristic->setValue((uint8_t*)&value, 4); // SET VALUE TO MODIFY TO SEND DATA SENSOR
-        send_data();
+        send_data(distance,vehicule_speed);
         //value++;
         Serial.println("Connected...");
         delay(5000); // bluetooth stack will go into congestion, if too many packets are sent --> 10 ms est le minimum
