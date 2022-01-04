@@ -40,8 +40,8 @@ class BLE {
 
     void init_BLE();
     void start_BLE();
-    void send_data(int distance, int object_speed);
-    void checking(int distance, int object_speed);
+    void send_data(int distance,int vehicule_speed);
+    void checking(int distance,int vehicule_speed);
 
 };
 
