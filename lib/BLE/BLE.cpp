@@ -8,8 +8,6 @@ BLE::~BLE()
 {
 }
 
-bool deviceConnected_=false;
-bool olddeviceConnected_=false;
 
 void BLE::init_BLE(){
     BLEDevice::init("My_ESP32");
@@ -84,6 +82,7 @@ void MyCharacteristicsCallbacks::onWrite(BLECharacteristic* pCharacteristic){
 
 void MyServerCallbacks::onConnect(BLEServer* pServer){
      deviceConnected_ = true;
+	Serial.println("Connected...");
      BLEDevice::startAdvertising();
 }
 
@@ -91,7 +90,7 @@ void MyServerCallbacks::onDisconnect(BLEServer* pServer){
      deviceConnected_ = false;
 }
 
-void BLE::checking(int distance,int vehicule_speed)
+/*void BLE::checking(int distance,int vehicule_speed)
 {
         if (deviceConnected_ && olddeviceConnected_) {
         //pCharacteristic->setValue((uint8_t*)&value, 4); // SET VALUE TO MODIFY TO SEND DATA SENSOR
@@ -114,3 +113,4 @@ void BLE::checking(int distance,int vehicule_speed)
         olddeviceConnected_ = deviceConnected_;
     }
 }
+*/

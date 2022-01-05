@@ -1,7 +1,6 @@
 #include "Speed.h"
 
-
-Speed:: Speed(int sensor_cm) {
+Speed:: Speed(int sensor_cm ) {
     this->sensors_distance_cm = sensor_cm;
 }
 
@@ -10,7 +9,7 @@ void Speed::set_range_cm(long range_0, long range_1) {
     this->range_cm_1 = range_1;
 }
 
-void Speed::compute_vehicles_speed() {
+void Speed::compute_vehicles_speed(void (*callback)(void)) {
 
     //this->flag_0 = false;
     //this->flag_1 = false;
@@ -27,6 +26,7 @@ void Speed::compute_vehicles_speed() {
         this->vehicles_speed = this->sensors_distance_cm * 1E1 * 3600 / abs(this->timestamp_sensor_0 - this->timestamp_sensor_1);
         this->flag_0 = false;
         this->flag_1 = false;
+        callback();
     }
 
     if(this->vehicles_speed > 200) this->vehicles_speed = 0;
@@ -49,6 +49,8 @@ void Speed::reset() {
     Serial.print(this->range_cm_0);Serial.print(" cm_0: ");
     Serial.print(this->range_cm_1);Serial.print(" cm_1: ");
     Serial.print("vehicles speed: "); Serial.print(this->vehicles_speed); Serial.println("Km/h");
+    this->range_cm_0 = 0;
+    this->range_cm_1 = 0;
     this->vehicles_speed = 0;
 }
 

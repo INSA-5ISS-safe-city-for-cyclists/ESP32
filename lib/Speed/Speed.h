@@ -28,7 +28,7 @@ public:
     long speed_range_1 = 0;
     Speed(int sensors_cm);
     ~Speed(){};
-    void compute_vehicles_speed();
+    void compute_vehicles_speed(void (*callback)(void));
     void set_range_cm(long range_0, long range_1);
     long get_distance();
     void reset();
