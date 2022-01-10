@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include <TFLI2C.h> // TFLuna-I2C Library v.0.2.0
 #include <Wire.h>
+#include "Speed.h"
 
 TFLI2C tflI2C;
+Speed speed(30);
 
 // Use these defaults or insert your own values
 int16_t tfAddr_def = 0x10; // default I2C address
@@ -21,6 +23,16 @@ uint8_t *p_tfl = (uint8_t *)&dist_max;
 //  commands that can be called at setup.
 void sampleCommands(uint8_t adr, uint8_t new_adr)
 {
+	Serial.print("System Reset: ");
+	if (tflI2C.Soft_Reset(adr))
+	{
+		Serial.println("Passed");
+	}
+	else
+		tflI2C.printStatus(); // `printStatus()` is for troubleshooting,
+							  //  It's not necessary for operation.
+	delay(500);
+
 	Serial.print("Set I2C Address to: ");
 	if (tflI2C.Set_I2C_Addr(new_adr, adr))
 	{
@@ -58,6 +70,10 @@ void sampleCommands(uint8_t adr, uint8_t new_adr)
 	// 	exit(EXIT_FAILURE);
 }
 
+void callback()
+{
+}
+
 void setup()
 {
 	Serial.begin(115200); // Initialize Serial port
@@ -67,7 +83,10 @@ void setup()
 	// Execute a group of commands.
 	// Comment this out if not needed.
 	sampleCommands(tfAddr_def, tfAddr_lidar1);
-	sampleCommands(tfAddr_def, tfAddr_lidar2);
+
+	// Wire.begin(); // Initialize Wire library
+
+	// sampleCommands(tfAddr_def, tfAddr_lidar2);
 }
 
 void test_adress()
@@ -113,22 +132,28 @@ void test_adress()
 
 void loop()
 {
+
 	test_adress();
 	// If data is read without error...
 	// if (tflI2C.getData(tfDist1, tfAddr_lidar1))
 	// {
-	// 	Serial.println("Dist: "); // ...print distance,
+	// 	Serial.println("Dist_1: "); // ...print distance,
 	// 	Serial.println(tfDist1);
+	// 	speed.set_range_0(tfDist1);
 	// }
 	// else
 	// 	tflI2C.printStatus(); // else, print error status.
 
 	// if (tflI2C.getData(tfDist2, tfAddr_lidar2))
 	// {
-	// 	Serial.println("Dist: "); // ...print distance,
+	// 	Serial.println("Dist_2: "); // ...print distance,
 	// 	Serial.println(tfDist2);
+	// 	speed.set_range_1(tfDist2);
 	// }
 	// else
 	// 	tflI2C.printStatus();
-	// // else, print error status.
+
+	// speed.compute_vehicles_speed(&callback);
+	// else, print error status.
+	delay(1050);
 }
