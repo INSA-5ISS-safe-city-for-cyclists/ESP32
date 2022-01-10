@@ -8,8 +8,8 @@ class Speed
 public:
     /* data */
     int sensors_distance_cm;
-    long range_cm_0;
-    long range_cm_1;
+    long range_cm_0=0;
+    long range_cm_1=0;
     long last_range_0 = 0;
     long last_range_1 = 0;
     long last_timestamp_range_0 = 1;
@@ -33,6 +33,8 @@ public:
     long get_distance();
     void reset();
     long get_vehicule_speed();
+    void set_range_0(long range_0);
+    void set_range_1(long range_1);
 };
 
 #endif

@@ -9,6 +9,14 @@ void Speed::set_range_cm(long range_0, long range_1) {
     this->range_cm_1 = range_1;
 }
 
+void Speed:: set_range_0(long range_0){
+    this->range_cm_0 = range_0;
+}
+
+void Speed:: set_range_1(long range_1){
+    this->range_cm_1 = range_1;
+}
+
 void Speed::compute_vehicles_speed(void (*callback)(void)) {
 
     //this->flag_0 = false;
@@ -26,7 +34,11 @@ void Speed::compute_vehicles_speed(void (*callback)(void)) {
         this->vehicles_speed = this->sensors_distance_cm * 1E1 * 3600 / abs(this->timestamp_sensor_0 - this->timestamp_sensor_1);
         this->flag_0 = false;
         this->flag_1 = false;
-        callback();
+        if(this->vehicles_speed > 1) {
+            range_cm_0 < range_cm_1 ? range_cm_0=range_cm_0 : range_cm_0=range_cm_1;
+            callback();
+        }
+        
     }
 
     if(this->vehicles_speed > 200) this->vehicles_speed = 0;
