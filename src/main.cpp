@@ -1,106 +1,159 @@
-#include <Speed.h>
-#include <BLE.cpp>
-#include <LIDAR.h>
-#include "Plotter.h"
+#include <Arduino.h>
+#include <TFLI2C.h> // TFLuna-I2C Library v.0.2.0
+#include <Wire.h>
+#include "Speed.h"
 
-// SPEED DEFINE
-#define WARNING_SPEED 10
-#define DISTANCE_BETWEEN_LIDAR 40
-double x;
-double y;
-double z;
+TFLI2C tflI2C;
+Speed speed(30);
 
-// Also declare plotter as global
-Plotter p;
+// Use these defaults or insert your own values
+int16_t tfAddr_def = 0x10; // default I2C address
+int16_t tfAddr_lidar1 = 0x11;
+int16_t tfAddr_lidar2 = 0x12;
+uint16_t tfFrame = TFL_DEF_FPS; // default frame rate
 
-Speed speed(DISTANCE_BETWEEN_LIDAR);
-LIDAR my_lidar_1, my_lidar_2;
-BLE my_ble;
+// device variables passed back by getData
+int16_t tfDist1 = 0;
+int16_t tfDist2 = 0; // distance in centimeters
 
-double speed_data;
+uint16_t dist_max = 1500;
+uint8_t *p_tfl = (uint8_t *)&dist_max;
 
-void sendData(void) {
-	Serial.println("SEND DATA DONE");
-	my_ble.send_data(speed.get_distance(), speed.get_vehicule_speed());
+//  This is a group of various sample
+//  commands that can be called at setup.
+void sampleCommands(uint8_t adr, uint8_t new_adr)
+{
+	Serial.print("System Reset: ");
+	if (tflI2C.Soft_Reset(adr))
+	{
+		Serial.println("Passed");
+	}
+	else
+		tflI2C.printStatus(); // `printStatus()` is for troubleshooting,
+							  //  It's not necessary for operation.
+	delay(500);
+
+	Serial.print("Set I2C Address to: ");
+	if (tflI2C.Set_I2C_Addr(new_adr, adr))
+	{
+		Serial.println(new_adr);
+	}
+	else
+		tflI2C.printStatus();
+	delay(500);
+
+	Serial.print("System Reset: ");
+	if (tflI2C.Soft_Reset(adr))
+	{
+		Serial.println("Passed");
+	}
+	else
+		tflI2C.printStatus(); // `printStatus()` is for troubleshooting,
+							  //  It's not necessary for operation.
+	delay(500);
+
+	Serial.print("NEW_ADR: ");
+	tflI2C.readReg(0x22, new_adr);
+
+	Serial.print("Set Frame Rate to: ");
+	if (tflI2C.Set_Frame_Rate(tfFrame, new_adr))
+	{
+		Serial.println(tfFrame);
+	}
+	else
+		tflI2C.printStatus();
+	delay(500);
+
+	// if (!tflI2C.writeReg(0x30, new_adr, p_tfl[0]))
+	// 	exit(EXIT_FAILURE);
+	// if (!tflI2C.writeReg(0x31, new_adr, p_tfl[1]))
+	// 	exit(EXIT_FAILURE);
+}
+
+void callback()
+{
 }
 
 void setup()
 {
+	Serial.begin(115200); // Initialize Serial port
+	Wire.begin();		  // Initialize Wire library
 
-	Serial.begin(112500);
+	Serial.println("TFLI2C example code"); // say "Hello!"
+	// Execute a group of commands.
+	// Comment this out if not needed.
+	// sampleCommands(tfAddr_def, tfAddr_lidar1);
 
-	my_ble.init_BLE();
-	my_ble.start_BLE();
+	// Wire.begin(); // Initialize Wire library
 
-	// p.Begin();
-	my_lidar_1.initialize_Lidar(&Serial1, 18, 19);
-	my_lidar_2.initialize_Lidar(&Serial2, 22, 23);
+	// sampleCommands(tfAddr_def, tfAddr_lidar2);
+}
 
-	// p.AddTimeGraph("graph", 1000, "x label", x, "y ", y, "z", z);
+void test_adress()
+{
+	byte error, address;
+	int nDevices;
+	Serial.println("Scanning...");
+	nDevices = 0;
+	for (address = 1; address < 127; address++)
+	{
+		Wire.beginTransmission(address);
+		error = Wire.endTransmission();
+		if (error == 0)
+		{
+			Serial.print("I2C device found at address 0x");
+			if (address < 16)
+			{
+				Serial.print("0");
+			}
+			Serial.println(address, HEX);
+			nDevices++;
+		}
+		else if (error == 4)
+		{
+			Serial.print("Unknow error at address 0x");
+			if (address < 16)
+			{
+				Serial.print("0");
+			}
+			Serial.println(address, HEX);
+		}
+	}
+	if (nDevices == 0)
+	{
+		Serial.println("No I2C devices found\n");
+	}
+	else
+	{
+		Serial.println("done\n");
+	}
+	delay(5000);
 }
 
 void loop()
 {
-	long range_0 = my_lidar_1.get_distance_inCm(&Serial1);
-	delay(1);
-	long range_1 = my_lidar_2.get_distance_inCm(&Serial2);
-	delay(1);
-	//   Serial.println(range_0);
-	//   Serial.println("-----");
-	//   Serial.println(range_1);
-	speed.set_range_cm(range_0, range_1);
-	//speed.compute_vehicles_speed(sendData);
-	// speed_data = speed.get_vehicule_speed();
 
-	// x = 0;
-	// y = 0;
-	// z = speed_data;
+	test_adress();
+	// If data is read without error...
+	// if (tflI2C.getData(tfDist1, tfAddr_lidar1))
+	// {
+	// 	Serial.println("Dist_1: "); // ...print distance,
+	// 	Serial.println(tfDist1);
+	// 	speed.set_range_0(tfDist1);
+	// }
+	// else
+	// 	tflI2C.printStatus(); // else, print error status.
 
-	// p.Plot();
+	// if (tflI2C.getData(tfDist2, tfAddr_lidar2))
+	// {
+	// 	Serial.println("Dist_2: "); // ...print distance,
+	// 	Serial.println(tfDist2);
+	// 	speed.set_range_1(tfDist2);
+	// }
+	// else
+	// 	tflI2C.printStatus();
 
-	// my_ble.checking(speed.get_distance(), speed.get_vehicule_speed()); // check if a smartphone is connected and send json data
-
-	if (deviceConnected_ && olddeviceConnected_)
-	{
-
-		long range_0 = my_lidar_1.get_distance_inCm(&Serial1);
-		delay(1);
-		long range_1 = my_lidar_2.get_distance_inCm(&Serial2);
-		delay(1);
-		/*
-		Serial.println(range_0);
-		Serial.println("-----");
-		Serial.println(range_1);
-		*/
-		speed.set_range_cm(range_0, range_1);
-		speed.compute_vehicles_speed(&sendData);
-
-		// pCharacteristic->setValue((uint8_t*)&value, 4); // SET VALUE TO MODIFY TO SEND DATA SENSOR
-		/*if (speed.get_distance() < 100)
-		{
-			Serial.println("SEND DATA DONE");
-
-			Serial.println(speed.get_distance());
-			//my_ble.send_data(speed.get_distance(), speed.get_vehicule_speed());
-			speed.reset();
-			delay(3000);
-			speed.set_range_cm(0,0);
-			// value++;
-		}*/
-	}
-	// disconnecting
-	if (!deviceConnected_ && olddeviceConnected_)
-	{
-		delay(500);							// give the bluetooth stack the chance to get things ready
-		my_ble.pServer->startAdvertising(); // restart advertising
-		Serial.println("Disconnected");
-		Serial.println("start advertising");
-		olddeviceConnected_ = deviceConnected_;
-	}
-	// connecting
-	if (deviceConnected_ && !olddeviceConnected_)
-	{
-		Serial.println("Connection...");
-		olddeviceConnected_ = deviceConnected_;
-	}
+	// speed.compute_vehicles_speed(&callback);
+	// else, print error status.
+	delay(1050);
 }
