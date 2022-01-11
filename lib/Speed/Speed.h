@@ -22,10 +22,12 @@ public:
     bool flag_1 = false;
     long buff_0 = 0;
     long buff_1 = 0;
+    long dist_mini=0;
 
 public:
     long speed_range_0 = 0;
     long speed_range_1 = 0;
+
     Speed(int sensors_cm);
     ~Speed(){};
     void compute_vehicles_speed(void (*callback)(void));
