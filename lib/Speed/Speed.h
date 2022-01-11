@@ -24,7 +24,7 @@ public:
     long buff_1 = 0;
 
 public:
-    double speed_range_0 = 0;
+    long speed_range_0 = 0;
     long speed_range_1 = 0;
     Speed(int sensors_cm);
     ~Speed(){};

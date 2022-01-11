@@ -82,7 +82,7 @@ void setup()
 	Serial.println("TFLI2C example code"); // say "Hello!"
 	// Execute a group of commands.
 	// Comment this out if not needed.
-	sampleCommands(tfAddr_def, tfAddr_lidar1);
+	// sampleCommands(tfAddr_def, tfAddr_lidar1);
 
 	// Wire.begin(); // Initialize Wire library
 
