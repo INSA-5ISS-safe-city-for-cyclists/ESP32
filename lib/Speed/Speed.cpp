@@ -33,7 +33,7 @@ void Speed::compute_vehicles_speed(void (*callback)(void))
     this->speed_range_1 = this->last_range_1 - this->range_cm_1;
 
     //ACTIVATION 2EME CAPTEUR
-    if (range_cm_1 < 100 && !flag_0 && !flag_1 && this->speed_range_1 > 50)
+    if (range_cm_1 < 100 && !flag_0 && !flag_1)
     {
         this->timestamp_sensor_1 = micros();
         this->flag_1 = true;
@@ -56,7 +56,7 @@ void Speed::compute_vehicles_speed(void (*callback)(void))
 
     //ACTIVATION 1ER CAPTEUR
 
-    if (range_cm_0 < 100 && flag_1 && !flag_0 && this->speed_range_0 > 50)
+    if (range_cm_0 < 100 && flag_1 && !flag_0)
     {
         this->timestamp_sensor_0 = micros();
         this->flag_0 = true;

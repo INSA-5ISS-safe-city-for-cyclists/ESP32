@@ -4,10 +4,12 @@
 #include "Speed.h"
 #include <BLE.cpp>
 #include <LIDAR.h>
+#include <Plotter.h>
 
 // SPEED DEFINE
 #define WARNING_SPEED 10
 #define DISTANCE_BETWEEN_LIDAR 100
+Plotter plot;
 
 double x;
 double y;
@@ -91,15 +93,6 @@ void sampleCommands(uint8_t adr, uint8_t new_adr)
 	// 	exit(EXIT_FAILURE);
 }
 
-void setup()
-{
-	Serial.begin(115200); // Initialize Serial port
-	Wire.begin();
-
-	my_ble.init_BLE();
-	my_ble.start_BLE();
-
-} // Initialize Wire library
 
 void test_adress()
 {
@@ -142,11 +135,29 @@ void test_adress()
 	delay(5000);
 }
 
+
+void setup()
+{
+	Serial.begin(115200); // Initialize Serial port
+	Wire.begin();
+
+	my_ble.init_BLE();
+	my_ble.start_BLE();
+
+	plot.Begin();
+	plot.AddTimeGraph( "buff", 500, "x label", x, "y ", y);
+
+
+} // Initialize Wire library
+
 void loop()
 {
 
 	if (deviceConnected_ && olddeviceConnected_)
 	{
+		// x = speed.buff_0;
+		// y = speed.buff_1;
+
 		if (tflI2C.getData(tfDist1, tfAddr_lidar1))
 		{
 			// Serial.println("Dist_1: "); // ...print distance,
@@ -182,4 +193,5 @@ void loop()
 		Serial.println("Connection...");
 		olddeviceConnected_ = deviceConnected_;
 	}
+	// plot.Plot();
 }
