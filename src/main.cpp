@@ -4,12 +4,12 @@
 #include "Speed.h"
 #include <BLE.cpp>
 #include <LIDAR.h>
-#include <Plotter.h>
 
 // SPEED DEFINE
 #define WARNING_SPEED 10
 #define DISTANCE_BETWEEN_LIDAR 100
-Plotter plot;
+#define LDR_ADDR_1 0x11
+#define LDR_ADDR_2 0x12
 
 double x;
 double y;
@@ -27,7 +27,7 @@ uint16_t tfFrame = TFL_DEF_FPS; // default frame rate
 int16_t tfDist1 = 0;
 int16_t tfDist2 = 0; // distance in centimeters
 
-uint16_t dist_max = 1500;
+uint16_t dist_max = 2500;
 uint8_t *p_tfl = (uint8_t *)&dist_max;
 
 Speed speed(DISTANCE_BETWEEN_LIDAR);
@@ -86,13 +86,21 @@ void sampleCommands(uint8_t adr, uint8_t new_adr)
 	else
 		tflI2C.printStatus();
 	delay(500);
-
-	// if (!tflI2C.writeReg(0x30, new_adr, p_tfl[0]))
-	// 	exit(EXIT_FAILURE);
-	// if (!tflI2C.writeReg(0x31, new_adr, p_tfl[1]))
-	// 	exit(EXIT_FAILURE);
 }
 
+void set_adress(uint8_t adr)
+{
+
+	if (!tflI2C.writeReg(0x30, adr, p_tfl[0]))
+		exit(EXIT_FAILURE);
+	if (!tflI2C.writeReg(0x31, adr, p_tfl[1]))
+		exit(EXIT_FAILURE);
+
+	tflI2C.Save_Settings(adr);
+	delay(500);
+	tflI2C.Soft_Reset(adr);
+	delay(500);
+}
 
 void test_adress()
 {
@@ -135,7 +143,6 @@ void test_adress()
 	delay(5000);
 }
 
-
 void setup()
 {
 	Serial.begin(115200); // Initialize Serial port
@@ -144,21 +151,17 @@ void setup()
 	my_ble.init_BLE();
 	my_ble.start_BLE();
 
-	plot.Begin();
-	plot.AddTimeGraph( "buff", 500, "x label", x, "y ", y);
+	// set_adress(LDR_ADDR_1);
 
-
-} // Initialize Wire library
+} // Initialize Wire library 
 
 void loop()
 {
-
+	// test_adress();
 	if (deviceConnected_ && olddeviceConnected_)
 	{
-		// x = speed.buff_0;
-		// y = speed.buff_1;
 
-		if (tflI2C.getData(tfDist1, tfAddr_lidar1))
+		if (tflI2C.getData(tfDist1, LDR_ADDR_1))
 		{
 			// Serial.println("Dist_1: "); // ...print distance,
 			// Serial.println(tfDist1);
@@ -167,7 +170,7 @@ void loop()
 		else
 			tflI2C.printStatus(); // else, print error status.
 
-		if (tflI2C.getData(tfDist2, tfAddr_lidar2))
+		if (tflI2C.getData(tfDist2, LDR_ADDR_2))
 		{
 			// Serial.println("Dist_2: "); // ...print distance,
 			// Serial.println(tfDist2);
@@ -193,5 +196,4 @@ void loop()
 		Serial.println("Connection...");
 		olddeviceConnected_ = deviceConnected_;
 	}
-	// plot.Plot();
 }

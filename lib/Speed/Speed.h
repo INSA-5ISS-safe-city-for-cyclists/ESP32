@@ -23,6 +23,8 @@ public:
     long buff_0 = 0;
     long buff_1 = 0;
     long dist_mini=0;
+    int8_t sens = 0;
+    int erreur=0;
 
 public:
     long speed_range_0 = 0;
