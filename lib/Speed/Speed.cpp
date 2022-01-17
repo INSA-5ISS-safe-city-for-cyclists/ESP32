@@ -1,7 +1,7 @@
 #include "Speed.h"
 
-int compteur1=0;
-int compteur2=0;
+int compteur1 = 0;
+int compteur2 = 0;
 
 Speed::Speed(int sensor_cm)
 {
@@ -140,12 +140,16 @@ void Speed::compute_vehicles_speed(void (*callback)(void))
             }
             else
             {
+
                 // range_cm_0 < range_cm_1 ? dist_mini = range_cm_0 : dist_mini = range_cm_1;
                 buff_0 > buff_1 ? dist_mini = buff_1 : dist_mini = buff_0;
+                if (dist_mini > 20)
+                {
+                    callback();
+                    delay(1000);
+                }
                 // Serial.print("dist_mini");
                 // Serial.println(dist_mini);
-                callback();
-                delay(500);
             }
 
             Serial.print("speed: ");

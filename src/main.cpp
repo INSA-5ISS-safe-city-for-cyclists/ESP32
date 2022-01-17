@@ -23,6 +23,11 @@ int16_t tfAddr_lidar1 = 0x11;
 int16_t tfAddr_lidar2 = 0x12;
 uint16_t tfFrame = TFL_DEF_FPS; // default frame rate
 
+int16_t tfAmpli1 = 0;
+int16_t tfAmpli2 = 0;
+int16_t tfTemp1 = 0;
+int16_t tfTemp2 = 0;
+
 // device variables passed back by getData
 int16_t tfDist1 = 0;
 int16_t tfDist2 = 0; // distance in centimeters
@@ -153,7 +158,7 @@ void setup()
 
 	// set_adress(LDR_ADDR_1);
 
-} // Initialize Wire library 
+} // Initialize Wire library
 
 void loop()
 {
@@ -161,20 +166,25 @@ void loop()
 	if (deviceConnected_ && olddeviceConnected_)
 	{
 
-		if (tflI2C.getData(tfDist1, LDR_ADDR_1))
+		if (tflI2C.getData(tfDist1, tfAmpli1, tfTemp1, LDR_ADDR_1))
 		{
 			// Serial.println("Dist_1: "); // ...print distance,
 			// Serial.println(tfDist1);
 			speed.set_range_0(tfDist1);
+
+			Serial.print("Amplitude 1 : ");
+			Serial.println(tfAmpli1);
 		}
 		else
 			tflI2C.printStatus(); // else, print error status.
 
-		if (tflI2C.getData(tfDist2, LDR_ADDR_2))
+		if (tflI2C.getData(tfDist2, tfAmpli2, tfTemp2, LDR_ADDR_2))
 		{
 			// Serial.println("Dist_2: "); // ...print distance,
 			// Serial.println(tfDist2);
 			speed.set_range_1(tfDist2);
+			Serial.print("Amplitude 2 : ");
+			Serial.println(tfAmpli2);
 		}
 		else
 			tflI2C.printStatus();
