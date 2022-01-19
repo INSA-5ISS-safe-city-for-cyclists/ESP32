@@ -1,4 +1,4 @@
-# ESP32
+# ESP32 + LIDAR TF-LUNA
 ## Safe city for cyclists - Embedded Part
 In this part, we will show you how to initialize the different part of the embedded system with the Lidar and the ESP32.
 
