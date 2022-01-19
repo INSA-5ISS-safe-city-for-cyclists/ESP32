@@ -27,7 +27,7 @@ lib_deps =
 ```
 
 
-At the beginning both Lidar have a default address 0x10. If we connect them, only one will be detected because they have the same addresses. So we have to configure them one by one before connecting them at the same time.
+For this project we used I²C comunnication. At the beginning both Lidar have a default address 0x10. If we connect them, only one will be detected because they have the same addresses. So we have to configure them one by one before connecting them at the same time.
 To do this, we must call this function in the setup by putting an address.
 ```cpp
 void set_new_adress(uint8_t adr, uint8_t new_adr)
