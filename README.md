@@ -13,7 +13,7 @@ In this part, we will show you how to initialize the different part of the embed
 
 ## Installation - Software 
 
-The project is built with PlatformIo Framework you must upload the code with it. moreover yu have to link these libriries on `platform.ini`
+The project is built with PlatformIo Framework you must upload the code with it. Moreover you have to link these libraries on `platform.ini`
 ```ini
 [env:esp32dev]
 platform = espressif32
