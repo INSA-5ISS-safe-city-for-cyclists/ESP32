@@ -3,6 +3,10 @@
 In this part, we will show you how to initialize the different part of the embedded system with the Lidar and the ESP32.
 
 ## Installation - Hardware
+<br />
+<div align="center">
+  <img src="https://firebasestorage.googleapis.com/v0/b/trade-dz.appspot.com/o/000000%2FESP32-%2B-LIDAR.jpg?alt=media&token=a42e5dc5-e47c-490e-9809-e4ed81abea82" alt="Logo" width="720">
+</div>
 
 
 ## Installation - Software 
