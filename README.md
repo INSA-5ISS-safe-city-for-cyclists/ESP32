@@ -9,7 +9,23 @@ In this part, we will show you how to initialize the different part of the embed
 </div>
 
 
+
+
 ## Installation - Software 
+
+The project is built with PlatformIo Framework you must upload the code with it. moreover yu have to link these libriries on `platform.ini`
+```ini
+[env:esp32dev]
+platform = espressif32
+board = esp32dev
+framework = arduino
+monitor_speed = 112500
+lib_deps = 
+	https://github.com/nkolban/ESP32_BLE_Arduino.git
+	https://github.com/budryerson/TFLuna-I2C.git
+	bblanchon/ArduinoJson@^6.18.5
+```
+
 
 At the beginning both Lidar have a default address 0x10. If we connect them, only one will be detected because they have the same addresses. So we have to configure them one by one before connecting them at the same time.
 To do this, we must call this function in the setup by putting an address.
@@ -111,4 +127,8 @@ void setup()
 }
 
 ```
+
+
+
+
 
