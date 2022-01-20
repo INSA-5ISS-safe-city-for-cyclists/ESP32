@@ -123,7 +123,7 @@ void setup()
 
 	my_ble.init_BLE(); // Initialize BLE
 	my_ble.start_BLE();
-	set_max_distance_adress(0x11,3000); 
+	set_max_distance_adress(0x11,3000); // 300 cm
 }
 
 ```
