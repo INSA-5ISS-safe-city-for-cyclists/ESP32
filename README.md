@@ -113,7 +113,7 @@ void set_max_distance_adress(uint8_t adr, uint16_t dist_max)
 }
 
 ```
-For example, you cant limit the maximum distance to 3m for the Lidar addressed at 0x11
+For example, you can limit the maximum distance to 3m for the Lidar addressed at 0x11
 
 ```cpp
 void setup()
